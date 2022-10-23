@@ -11,9 +11,9 @@ class ProductRepo implements Repo<Product> {
         this.db = Database.getInstance().getDB();
     }
 
-    async findAll(): Promise<Product[]> {
+    async findAll(category?: any): Promise<Product[]> {
         try {
-            const query = "SELECT * FROM products JOIN categories ON products.category = categories.id JOIN admins ON admins.id = products.addedby;";
+            const query = `SELECT * FROM products JOIN categories ON products.category = categories.id JOIN admins ON admins.id = products.addedby ${category ? "WHERE category = " + category : ""};`;
 
             let products = (await this.db.query(query)).rows;
             products.map((row) => this.queryResultToProduct(row));
