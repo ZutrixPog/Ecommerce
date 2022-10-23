@@ -1,0 +1,23 @@
+{
+  "name": "e-commerce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha --require ts-node/register src/**/*.test.ts",
+    "start": "nodemon ./src/app.ts"
+  },
+  "author": "Efi",
+  "license": "MIT",
+  "dependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/pg": "^8.6.5",
+    "bcrypt": "^5.1.0",
+    "pg": "^8.8.0",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.0",
+    "mocha": "^10.0.0"
+  }
+}
