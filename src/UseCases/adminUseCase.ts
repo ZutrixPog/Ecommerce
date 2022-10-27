@@ -33,55 +33,61 @@ class AdminUseCase {
         }
     }
 
-    public async signUp(newAdmin: Admin): Promise<void> {
+    public async signUp(newAdmin: Admin): Promise<any> {
         try {
             newAdmin.setPassword(await this.crypto.hash(newAdmin.getPassword()));
-            await this.adminRepo.addOne(newAdmin);
+            const id = await this.adminRepo.addOne(newAdmin);
+            return id;
         } catch (err) {
             console.error(err);
             throw err;
         }
     }
 
-    public async newProduct(product: Product): Promise<void> {
+    public async newProduct(product: Product): Promise<any> {
         try {
-            await this.productRepo.addOne(product);
+            const id = await this.productRepo.addOne(product);
+            return id;
         } catch (err) {
             console.error(err);
             throw err;
         }
     }
 
-    public async modifyProduct(product: Product): Promise<void> {
+    public async modifyProduct(product: Product): Promise<any> {
         try {
-            await this.productRepo.updateOne(product);
+            const id = await this.productRepo.updateOne(product);
+            return id;
         } catch (err) {
             console.error(err);
             throw err;
         }
     }
 
-    public async deleteProduct(product: Product): Promise<void> {
+    public async deleteProduct(product: Product): Promise<any> {
         try {
-            await this.productRepo.deleteOne(product.getId())
+            const id = await this.productRepo.deleteOne(product.getId());
+            return id;
         } catch (err) {
             console.error(err);
             throw err;
         }
     }
 
-    public async deleteUser(user: User): Promise<void> {
+    public async deleteUser(user: User): Promise<any> {
         try {
-            await this.userRepo.deleteOne(user.getId());
+            const id = await this.userRepo.deleteOne(user.getId());
+            return id;
         } catch (err) {
             console.error(err);
             throw err;
         }
     }
 
-    public async modifyUser(user: User): Promise<void> {
+    public async modifyUser(user: User): Promise<any> {
         try {
-            await this.userRepo.updateOne(user);
+            const id = await this.userRepo.updateOne(user);
+            return id;
         } catch (err) {
             console.error(err);
             throw err;

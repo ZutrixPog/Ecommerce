@@ -52,7 +52,7 @@ class OrderRepo implements Repo<Order> {
         }
     }
 
-    async addOrderItems(order: string | Order, item: OrderItem): Promise<void> {
+    async addOrderItems(order: string | Order, item: OrderItem): Promise<any> {
         try {
             const query = "INSERT INTO order_item (order_id, product_id, amount) VALUES ($1, $2, $3) RETURNING id;";
             const values = [
@@ -69,7 +69,7 @@ class OrderRepo implements Repo<Order> {
         }
     }
 
-    async updateOne(newOne: Order): Promise<void> {
+    async updateOne(newOne: Order): Promise<any> {
         try {
             const old = await this.findOne(newOne.getId());
             const query = "UPDATE orders SET user_id = $1, total = $2, payment_id = $3 WHERE id = $4 RETURNING id;";
@@ -88,7 +88,7 @@ class OrderRepo implements Repo<Order> {
         }
     }
 
-    async deleteOne(id: any): Promise<void> {
+    async deleteOne(id: any): Promise<any> {
         try {
             const query = `DELETE FROM orders WHERE id = ${id};` +
                           `DELETE FROM order_item WHERE order_id = ${id};`;

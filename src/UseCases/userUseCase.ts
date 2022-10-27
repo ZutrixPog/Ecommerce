@@ -1,4 +1,6 @@
 import Repo from "../Datasource/datasource.types";
+import Order from "../Entities/order";
+import OrderItem from "../Entities/orderItem";
 import User from "../Entities/user";
 
 class UserUseCase {
