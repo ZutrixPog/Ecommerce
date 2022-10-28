@@ -13,9 +13,9 @@ class OrderRepo implements Repo<Order> {
         this.db = Database.getInstance().getDB();
     }
 
-    async findAll(): Promise<Order[]> {
+    async findAll(userId?: any): Promise<Order[]> {
         try {
-            const query = "SELECT * FROM orders JOIN users ON users.id = orders.user_id;";
+            const query = "SELECT * FROM orders JOIN users ON users.id = orders.user_id "  + userId ? `WHERE orders.user_id = ${userId};`: ";";
 
             const orders = (await this.db.query(query)).rows;
             orders.map(row => this.queryToOrder(row));

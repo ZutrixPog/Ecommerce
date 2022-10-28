@@ -1,4 +1,9 @@
 
+type Res = {
+    id: any,
+    username: any,
+};
+
 class Admin {
     private id?: string;
     private username?: string;
@@ -38,6 +43,13 @@ class Admin {
 
     getPassword(): string | undefined {
         return this.password;
+    }
+
+    asRes(): Res {
+        return {
+            id: this.getId(),
+            username: this.getUsername()
+        }
     }
 }
 

@@ -1,11 +1,11 @@
 import assert from 'assert';
 import FakeProductRepo from '../Datasource/fake/fakeProductRepo';
 import Product from '../Entities/product';
-import storeUseCase from './storeUseCase';
+import StoreUseCase from './storeUseCase';
 
 
 const productRepo = new FakeProductRepo();
-const usecase     = new storeUseCase(productRepo);
+const usecase     = new StoreUseCase(productRepo);
 
 describe("store usecase", () => {
 

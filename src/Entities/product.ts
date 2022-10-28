@@ -1,5 +1,17 @@
 import Admin from "./admin";
 
+type Res = {
+    id: any,
+    name: any,
+    description: any,
+    category: any,
+    addedBy?: {
+        id: any,
+        username: any,
+    },
+    price: any
+}
+
 class Product {
     private id: any;
     private name?: string;
@@ -71,8 +83,19 @@ class Product {
         return this;
     }
 
-    getPrice(): number | undefined {
-        return this.price;
+    getPrice(): number {
+        return this.price as number;
+    }
+
+    asRes(): Res {
+        return {
+            id: this.getId(),
+            name: this.getName(),
+            description: this.getDescription(),
+            category: this.getCategory(),
+            addedBy: this.getAddedBy()?.asRes(),
+            price: this.getPrice()
+        }
     }
 }
 

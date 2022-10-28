@@ -4,7 +4,7 @@ import Order from "../Entities/order";
 import Product from "../Entities/product";
 import cat from '../Datasource/categories';
 
-class storeUseCase {
+class StoreUseCase {
     private productRepo: Repo<Product>;
 
     constructor(productRepo: Repo<Product>) {
@@ -50,4 +50,4 @@ class storeUseCase {
     }
 }
 
-export default storeUseCase;
+export default StoreUseCase;

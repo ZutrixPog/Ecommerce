@@ -17,7 +17,12 @@ class FakeOrderRepo implements Repo<Order> {
         ]
     }
 
-    async findAll(): Promise<Order[]> {
+    async findAll(userId?: any): Promise<Order[]> {
+        if (userId) {
+            return this.orders.filter(order => {
+                return order.getUser()?.getId() == userId;
+            });
+        }
         return this.orders;
     }
 

@@ -5,11 +5,11 @@ import assert from 'assert';
 import FakeUserRepo from "../Datasource/fake/fakeUserRepo";
 import User from "../Entities/user";
 import UserUseCase from "./userUseCase";
+import BcryptWrapper from "../utils/crypto";
 
-const orders = new FakeOrderRepo();
-const orderItem = new FakeOrderItemRepo();
+const crypto = new BcryptWrapper();
 const users = new FakeUserRepo();
-const usecase = new UserUseCase(users);
+const usecase = new UserUseCase(users, crypto);
 
 describe("User Usecase", () => {
     let userid: any;

@@ -1,27 +1,61 @@
-import StoreUseCase from "../UseCases/storeUseCase";
+import User from "../Entities/user";
+import OrderUseCase from "../UseCases/orderUseCase";
 import { IRequest, IResponse } from "./controller.types";
 
-
-class ShopController {
+class OrderController {
     private headers = {
         'Content-Type': 'application/json'
     };
 
-    private storeUsecase: StoreUseCase;
+    private orderUsecase: OrderUseCase;
 
-    constructor(storeUseCase: StoreUseCase) {
-        this.storeUsecase = storeUseCase;
+    constructor(orderUsecase: OrderUseCase) {
+        this.orderUsecase = orderUsecase;
     }
 
-    public async getProducts(req: IRequest): Promise<IResponse> {
+    public async getOrders(req: IRequest): Promise<IResponse> {
         try {
-            const products = await this.storeUsecase.getAllProducts();
+            const {order: {userId}} = req.body;
+
+            const orders = await this.orderUsecase.findUserOrders(new User({id: userId}));
+
+            let res = [];
+            for (const order of orders) {
+                const orderItems = await this.orderUsecase.getOrderItems(order.getId());
+                res.push({
+                    order,
+                    orderItems
+                });
+            }
+
+            return {
+                headers: this.headers,
+                status: 200,
+                body: res
+            }
+        } catch (err: any) {
+            console.error(err);
+            return {
+                headers: this.headers,
+                status: 400,
+                body: {
+                    error: err.message
+                }
+            }
+        }
+    }
+
+    public async postMakeOrder(req: IRequest): Promise<IResponse> {
+        try {
+            const {order, items} = req.body;
+
+            const id = await this.orderUsecase.create(order, items);
 
             return {
                 headers: this.headers,
                 status: 200,
                 body: {
-                    products: products.map(prod => prod.asRes())
+                    id
                 }
             };
         } catch (err: any) {
@@ -35,44 +69,20 @@ class ShopController {
             }
         }
     }
-
-    public async getProductsByCategory(req: IRequest): Promise<IResponse> {
+    
+    public async deleteCancelOrder(req: IRequest): Promise<IResponse> {
         try {
-            const {product: {category}} = req.body;
-            const products = await this.storeUsecase.getProductsByCategory(category);
+            const {order: {id}} = req.body;
+
+            const canceled = await this.orderUsecase.cancel(id);
 
             return {
                 headers: this.headers,
                 status: 200,
                 body: {
-                    products: products.map(prod => prod.asRes())
-                }
-            };
-        } catch (err: any) {
-            console.error(err);
-            return {
-                headers: this.headers,
-                status: 400,
-                body: {
-                    error: err.message
+                    id: canceled
                 }
             }
-        }
-    }
-
-    public async getProduct(req: IRequest): Promise<IResponse> {
-        try {
-            const {product: {id}} = req.body;
-
-            const product = await this.storeUsecase.getProduct(id);
-
-            return {
-                headers: this.headers,
-                status: 200,
-                body: {
-                    product: product.asRes()
-                }
-            };
         } catch (err: any) {
             console.error(err);
             return {
@@ -86,4 +96,4 @@ class ShopController {
     }
 }
 
-export default ShopController;
+export default OrderController;

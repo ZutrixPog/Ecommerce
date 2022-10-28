@@ -1,5 +1,11 @@
 
 
+type Res = {
+    id: any,
+    username: any,
+    address: any
+}
+
 class User {
     private id: any;
     private username?: string;
@@ -52,6 +58,13 @@ class User {
         return this.address;
     }
 
+    asRes(): Res {
+        return {
+            id: this.getId(),
+            username: this.getUsername(),
+            address: this.getAddress()
+        }
+    }
 }
 
 export default User;
