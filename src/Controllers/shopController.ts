@@ -1,3 +1,4 @@
+import Product from "../Entities/product";
 import StoreUseCase from "../UseCases/storeUseCase";
 import { IRequest, IResponse } from "./controller.types";
 
@@ -15,31 +16,12 @@ class ShopController {
 
     public async getProducts(req: IRequest): Promise<IResponse> {
         try {
-            const products = await this.storeUsecase.getAllProducts();
-
-            return {
-                headers: this.headers,
-                status: 200,
-                body: {
-                    products: products.map(prod => prod.asRes())
-                }
-            };
-        } catch (err: any) {
-            console.error(err);
-            return {
-                headers: this.headers,
-                status: 400,
-                body: {
-                    error: err.message
-                }
+            let products: Product[];
+            if (!req.query.category) {
+                products = await this.storeUsecase.getAllProducts();
+            } else {
+                products = await this.storeUsecase.getProductsByCategory(req.query.category);
             }
-        }
-    }
-
-    public async getProductsByCategory(req: IRequest): Promise<IResponse> {
-        try {
-            const {product: {category}} = req.body;
-            const products = await this.storeUsecase.getProductsByCategory(category);
 
             return {
                 headers: this.headers,
@@ -62,7 +44,7 @@ class ShopController {
 
     public async getProduct(req: IRequest): Promise<IResponse> {
         try {
-            const {product: {id}} = req.body;
+            const {id} = req.params;
 
             const product = await this.storeUsecase.getProduct(id);
 

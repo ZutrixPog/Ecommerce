@@ -105,8 +105,9 @@ class AdminController {
     public async putEditProduct(req: IRequest): Promise<IResponse> {
         try {
             const {product} = req.body;
+            const adminId = req.data.user.id;
 
-            const id = await this.adminUsecase.modifyProduct(new Product(product));
+            const id = await this.adminUsecase.modifyProduct(new Product(product), adminId);
 
             return {
                 headers: this.headers, 
@@ -180,8 +181,9 @@ class AdminController {
     public async deleteProduct(req: IRequest): Promise<IResponse> {
         try {
             const {product} = req.body;
+            const adminId = req.body.user.id;
 
-            const deleted = await this.adminUsecase.deleteProduct(new Product(product));
+            const deleted = await this.adminUsecase.deleteProduct(new Product(product), adminId);
 
             return {
                 headers: this.headers, 

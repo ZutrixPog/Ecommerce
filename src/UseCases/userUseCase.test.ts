@@ -5,7 +5,7 @@ import assert from 'assert';
 import FakeUserRepo from "../Datasource/fake/fakeUserRepo";
 import User from "../Entities/user";
 import UserUseCase from "./userUseCase";
-import BcryptWrapper from "../utils/crypto";
+import BcryptWrapper from "../utils/crypto/crypto";
 
 const crypto = new BcryptWrapper();
 const users = new FakeUserRepo();
@@ -23,19 +23,18 @@ describe("User Usecase", () => {
         const correctUser = "user";
         const correctPass = "user";
 
-        assert.equal(true, await usecase.authenticate(correctUser, correctPass), "didnt authenticate valid user");
+        assert.notEqual(null, await usecase.authenticate(correctUser, correctPass), "didnt authenticate valid user");
     });
 
     it("shouldn't authenticate invalid users", async () => {
         const wrongUser = "wrong";
         const wrongPass = "wrong";
 
-        assert.notEqual(true, await usecase.authenticate(wrongUser, wrongPass), "authenticated invalid user");
+        assert.equal(null, await usecase.authenticate(wrongUser, wrongPass), "authenticated invalid user");
     });
     
     it("should get users info by id", async () => {
         const user = await usecase.findById(userid);
-        
         assert.notEqual(user, null);
     });
 

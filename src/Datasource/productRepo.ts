@@ -13,12 +13,12 @@ class ProductRepo implements Repo<Product> {
 
     async findAll(category?: any): Promise<Product[]> {
         try {
-            const query = `SELECT * FROM products JOIN categories ON products.category = categories.id JOIN admins ON admins.id = products.addedby ${category ? "WHERE category = " + category : ""};`;
+            const query = `SELECT products.id as productid, * FROM products JOIN categories ON products.category = categories.id JOIN admins ON admins.id = products.addedby ${category ? "WHERE category = " + category : ""};`;
 
             let products = (await this.db.query(query)).rows;
-            products.map((row) => this.queryResultToProduct(row));
+            const res = products.map((row) => this.queryResultToProduct(row));
 
-            return products;
+            return res;
         } catch (err) {
             console.error(err);
             throw err;
@@ -27,14 +27,15 @@ class ProductRepo implements Repo<Product> {
 
     async findOne(crit: Product): Promise<Product> {
         try {
-            const query = `SELECT * FROM products INNER JOIN categories ON products.category = categories.id INNER JOIN admins ON admins.id = products.addedby WHERE ${(crit.getId() ? "products.id=$1 " : crit.getName() ? "name=$1 " : "category=$1")};`;
+            const query = `SELECT products.id as productid, * FROM products INNER JOIN categories ON products.category = categories.id INNER JOIN admins ON admins.id = products.addedby WHERE ${(crit.getId() ? "products.id=$1 " : crit.getName() ? "name=$1 " : "category=$1")} LIMIT 1;`;
             const values = [crit.getId() || crit.getName() || crit.getCategory()];
-
+    
             const product = await this.db.query(query, values);
+            console.log(product)
             return this.queryResultToProduct(product.rows[0]);
         } catch (err) {
             console.error(err);
-            throw err;
+            throw new Error("could find your Product");
         }
     }
 
@@ -98,7 +99,7 @@ class ProductRepo implements Repo<Product> {
 
     private queryResultToProduct(row: any): Product {
         const product = new Product({
-            id: row.id,
+            id: row.productid,
             name: row.name,
             description: row.description,
             category: row.category_name,

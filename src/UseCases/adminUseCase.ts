@@ -2,7 +2,8 @@ import Repo from "../Datasource/datasource.types";
 import Admin from "../Entities/admin";
 import Product from "../Entities/product";
 import User from "../Entities/user";
-import Cryptography from "../utils/crypto.types";
+import Cryptography from "../utils/crypto/crypto.types";
+import { genToken } from "../utils/token/token";
 
 
 class AdminUseCase {
@@ -18,18 +19,28 @@ class AdminUseCase {
         this.crypto    = crypto;
     }
 
-    public async authenticate(username: string, password: string): Promise<boolean> {
+    public async authenticate(username: string, password: string): Promise<any> {
         try {
             const admin = await this.adminRepo.findOne(new Admin({username, password}));
-    
-            if (!admin.getUsername() || !admin.getPassword()) {
+
+            if (!admin || !admin.getUsername() || !admin.getPassword()) {
                 throw new Error("user not found");
             }
+
+            if (!(await this.crypto.compare(password, admin.getPassword()))) {
+                throw new Error("Username or Password is not correct");
+            }
+
+            const token = genToken({
+                id: admin.getId(),
+                username: admin.getUsername(),
+                access: "admin"
+            });
     
-            return await this.crypto.compare(password, admin.getPassword());      
+            return token;      
         } catch (error) {
             console.error(error);
-            return false;
+            throw error;
         }
     }
 
@@ -37,7 +48,14 @@ class AdminUseCase {
         try {
             newAdmin.setPassword(await this.crypto.hash(newAdmin.getPassword()));
             const id = await this.adminRepo.addOne(newAdmin);
-            return id;
+
+            const token = genToken({
+                id: newAdmin.getId(),
+                username: newAdmin.getUsername(),
+                access: "admin"
+            });
+
+            return token;
         } catch (err) {
             console.error(err);
             throw err;
@@ -54,8 +72,18 @@ class AdminUseCase {
         }
     }
 
-    public async modifyProduct(product: Product): Promise<any> {
+    public async modifyProduct(product: Product, adminId: any): Promise<any> {
         try {
+            const prod = await this.productRepo.findOne(product);
+
+            if (!prod) {
+                throw new Error("Product not found");
+            }
+
+            if (prod.getAddedBy()?.getId() != adminId) {
+                throw new Error("not Authorized");
+            }
+
             const id = await this.productRepo.updateOne(product);
             return id;
         } catch (err) {
@@ -64,8 +92,13 @@ class AdminUseCase {
         }
     }
 
-    public async deleteProduct(product: Product): Promise<any> {
+    public async deleteProduct(product: Product, adminId: any): Promise<any> {
         try {
+            const prod = await this.productRepo.findOne(product);
+            if (prod.getAddedBy()?.getId() != adminId) {
+                throw new Error("not Authorized");
+            }
+
             const id = await this.productRepo.deleteOne(product.getId());
             return id;
         } catch (err) {

@@ -17,8 +17,8 @@ class OrderItemRepo implements Repo<OrderItem> {
             const query = `SELECT * FROM order_item JOIN products ON products.id = order_item.product_id;`;
             
             const orderItems = (await this.db.query(query)).rows;
-            orderItems.map(row => this.queryToOrderItem(row));
-            return orderItems;
+            const res = orderItems.map(row => this.queryToOrderItem(row));
+            return res;
         } catch(err) {
             console.error(err);
             throw err;

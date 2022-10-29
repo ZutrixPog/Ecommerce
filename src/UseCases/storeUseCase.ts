@@ -40,7 +40,7 @@ class StoreUseCase {
 
     public async getProduct(id: any): Promise<Product> {
         try {
-            const product = await this.productRepo.findOne(id);
+            const product = await this.productRepo.findOne(new Product({id}));
 
             return product;
         } catch (err) {

@@ -40,7 +40,7 @@ describe("order Usecase", () => {
     });
     
     it("should let users cancel orders", async () => {
-        const id = await usecase.cancel(orderId);
+        const id = await usecase.cancel(orderId, 1);
 
         assert.equal(id, orderId);
     });

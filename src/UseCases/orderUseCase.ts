@@ -64,8 +64,14 @@ class OrderUseCase {
         }
     }
 
-    public async cancel(id: any): Promise<any> {
+    public async cancel(id: any, userid: any): Promise<any> {
         try {
+            const order = await this.orderRepo.findOne(id);
+
+            if (order.getUser()?.getId() != userid) {
+                throw new Error("you cant cancel someone else's order");
+            }
+
             const orderid = await this.orderRepo.deleteOne(id);
 
             return orderid;

@@ -15,9 +15,9 @@ class OrderController {
 
     public async getOrders(req: IRequest): Promise<IResponse> {
         try {
-            const {order: {userId}} = req.body;
+            const {user: {id}} = req.data;
 
-            const orders = await this.orderUsecase.findUserOrders(new User({id: userId}));
+            const orders = await this.orderUsecase.findUserOrders(new User({id}));
 
             let res = [];
             for (const order of orders) {
@@ -74,7 +74,7 @@ class OrderController {
         try {
             const {order: {id}} = req.body;
 
-            const canceled = await this.orderUsecase.cancel(id);
+            const canceled = await this.orderUsecase.cancel(id, req.data.user.id);
 
             return {
                 headers: this.headers,

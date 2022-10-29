@@ -2,7 +2,8 @@ import Repo from "../Datasource/datasource.types";
 import Order from "../Entities/order";
 import OrderItem from "../Entities/orderItem";
 import User from "../Entities/user";
-import Cryptography from "../utils/crypto.types";
+import Cryptography from "../utils/crypto/crypto.types";
+import { genToken } from "../utils/token/token";
 
 class UserUseCase {
     private userRepo: Repo<User>;
@@ -17,26 +18,48 @@ class UserUseCase {
         try {
             user.setPassword(await this.crypto.hash(user.getPassword()));
             const id = await this.userRepo.addOne(user);
-            return id;
+
+            const token = genToken({
+                id: user.getId(),
+                username: user.getUsername(),
+                access: "user"
+            });
+            
+            return token;
         } catch (err) {
             console.error(err);
             throw err;
         }
     }
 
-    public async authenticate(username: string, password: string): Promise<boolean> {
+    public async authenticate(username: string, password: string): Promise<any> {
         try {
             const user = await this.userRepo.findOne(new User({username}));
-            return await this.crypto.compare(password, user.getPassword());
+
+            if (!user) {
+                throw new Error("user not found");
+            }
+
+            if (!(await this.crypto.compare(password, user.getPassword()))) {
+                throw new Error("Username or Password is not correct");
+            }
+
+            const token = genToken({
+                id: user.getId(),
+                username: user.getUsername(),
+                access: "user"
+            });
+
+            return token;
         } catch (err) {
             console.error(err);
-            return false;
+            throw err;
         }
     }
 
     public async findById(id: any): Promise<User> {
         try {
-            const user = await this.userRepo.findOne(new User({id}));
+            const user = await this.userRepo.findOne(new User({id: id}));
             return user;
         } catch (err) {
             console.error(err);

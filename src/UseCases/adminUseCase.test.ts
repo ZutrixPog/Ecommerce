@@ -5,7 +5,7 @@ import FakeUserRepo from '../Datasource/fake/fakeUserRepo';
 import Admin from '../Entities/admin';
 import Product from '../Entities/product';
 import User from '../Entities/user';
-import BcryptWrapper from '../utils/crypto';
+import BcryptWrapper from '../utils/crypto/crypto';
 import AdminUserCase from './adminUseCase';
 
 const admins = new FakeAdminRepo();      
@@ -28,32 +28,33 @@ describe("Usecases", () => {
             const correctUser = "admin";
             const correctPass = "admin";
 
-            assert.equal(true, await adminUsecase.authenticate(correctUser, correctPass), "didnt authenticate valid Admin");
+            assert.notEqual(null, await adminUsecase.authenticate(correctUser, correctPass), "didnt authenticate valid Admin");
         });
 
         it("shouldnt authenticate invalid admin", async() => {
             const wrongUser = "wrong";
             const wrongPass = "wrong";
 
-            assert.notEqual(true, await adminUsecase.authenticate(wrongUser, wrongPass), "authenticated invalid Admin");
+            assert.equal(null, await adminUsecase.authenticate(wrongUser, wrongPass), "authenticated invalid Admin");
         });
     
     
         it("should let admins add products", async () => {
             const newProduct = new Product({name: "test", description: "test", category: 1, addedBy: new Admin({id: 1, username: "Erfan"}), price: 20000});
             const id = await adminUsecase.newProduct(newProduct);
+            productid = id;
             assert.notEqual(id, null);
         });
     
         it("should let admins modify products", async () => {
             const productToBeUpdated = new Product({id: productid, name: "test updated", description: "test", category: 1, addedBy: new Admin({id: 1, username: "admin"}), price: 20000});
-            const id = await adminUsecase.modifyProduct(productToBeUpdated);
+            const id = await adminUsecase.modifyProduct(productToBeUpdated, 1);
             console.log(id)
             assert.notEqual(id, null);
         });
     
         it("should let admins delete products", async () => {
-            const id = await adminUsecase.deleteProduct(new Product({id: productid}));
+            const id = await adminUsecase.deleteProduct(new Product({id: productid}), 1);
 
             assert(id == productid);
         });

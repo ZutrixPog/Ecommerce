@@ -18,9 +18,9 @@ class AdminRepo implements Repo<Admin> {
         try {
             const query = "SELECT * FROM admins";
             const admins = (await this.db.query(query)).rows;
-            admins.map((row) => this.resultToAdmin(row));
+            const res = admins.map((row) => this.resultToAdmin(row));
 
-            return admins;
+            return res;
         } catch(err) {
             console.error(err);
             throw err;

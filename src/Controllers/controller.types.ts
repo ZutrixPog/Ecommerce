@@ -8,12 +8,14 @@ interface IRequest {
     method?: any,
     path?: any,
     headers?: any,
+    data?: any,
 }
 
 interface IResponse {
     headers: any,
     status: any,
     body: any,
+    data?: any
 }
 
 export {IRequest, IResponse};

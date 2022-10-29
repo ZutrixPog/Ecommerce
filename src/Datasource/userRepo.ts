@@ -17,9 +17,9 @@ class UserRepo implements Repo<User> {
             const query = "SELECT * FROM users";
 
             const users = (await this.db.query(query)).rows;
-            users.map(row => this.queryToUser(row));
+            const res = users.map(row => this.queryToUser(row));
 
-            return users;
+            return res;
         } catch(err) {
             console.error(err);
             throw err;

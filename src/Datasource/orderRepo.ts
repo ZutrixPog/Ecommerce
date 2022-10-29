@@ -15,12 +15,12 @@ class OrderRepo implements Repo<Order> {
 
     async findAll(userId?: any): Promise<Order[]> {
         try {
-            const query = "SELECT * FROM orders JOIN users ON users.id = orders.user_id "  + userId ? `WHERE orders.user_id = ${userId};`: ";";
+            const query = "SELECT * FROM orders JOIN users ON users.id = orders.user_id "  + (userId ? `WHERE orders.user_id = ${userId};`: ";");
 
             const orders = (await this.db.query(query)).rows;
-            orders.map(row => this.queryToOrder(row));
+            const res = orders.map(row => this.queryToOrder(row));
 
-            return orders;
+            return res;
         } catch (err) {
             console.error(err);
             throw err;
