@@ -13,7 +13,7 @@ function callBack(controller: any, label: "route" | "middleware"): any {
             io: req.app.io,
             path: req.path,
             headers: req.headers,
-            data: null
+            data: req.data
         };
 
         if (label === "route") {
@@ -54,7 +54,7 @@ function callBack(controller: any, label: "route" | "middleware"): any {
                     res.set(httpResponse.headers);
                 }
 
-                if (httpResponse.statusCode === 200) {
+                if (httpResponse.status === 200) {
                     req.data = httpResponse.data;
                     next();
                     return;

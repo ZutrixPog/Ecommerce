@@ -7,7 +7,7 @@ const headers = {
 
 function auth(access: "user" | "admin") {
 
-    return (req: IRequest) => {
+    return async (req: IRequest) => {
         try {
             const token = req.headers.authorization;
     

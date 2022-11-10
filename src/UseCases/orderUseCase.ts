@@ -41,7 +41,7 @@ class OrderUseCase {
 
     public async create(order: Order, items: OrderItem[]): Promise<any> {
         try {
-            const orderid = await this.orderRepo.addOne(order.setTotal(0));
+            const orderid = await this.orderRepo.addOne(order);
 
             let total = 0;
             for (const item of items) {
@@ -49,6 +49,7 @@ class OrderUseCase {
                 if (product === null) {
                     continue;
                 }
+                item.setOrder(new Order({id: orderid}));
                 await this.orderItemRepo.addOne(item);
                 total += item.getAmount() as number * product.getPrice();
             }

@@ -31,8 +31,9 @@ class OrderItemRepo implements Repo<OrderItem> {
             const values = [orderId];
             
             const orderItems = (await this.db.query(query, values)).rows;
-            orderItems.map(row => this.queryToOrderItem(row));
-            return orderItems;
+            const res = orderItems.map(row => this.queryToOrderItem(row));
+            
+            return res;
         } catch(err) {
             console.error(err);
             throw err;
@@ -108,7 +109,7 @@ class OrderItemRepo implements Repo<OrderItem> {
         return new OrderItem({
             id: row.id,
             order: new Order({id: row.order_id}),
-            Product: new Product({id: row.product_id, name: row.name, description: row.description, category: row.category, addedBy: row.addedby, price: row.price}),
+            product: new Product({id: row.product_id, name: row.name, description: row.description, category: row.category, addedBy: row.addedby, price: row.price}),
             amount: row.amount
         });
     }

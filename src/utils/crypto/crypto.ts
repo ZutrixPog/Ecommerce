@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 class BcryptWrapper implements Cryptography {
 
     async hash(input: string): Promise<string> {
-        return await bcrypt.hash(input, 10);
+        return await bcrypt.hash(input, 4);
     }
 
     async compare(input: string, actual: string): Promise<boolean> {

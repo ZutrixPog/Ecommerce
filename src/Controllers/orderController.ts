@@ -1,3 +1,6 @@
+import Order from "../Entities/order";
+import OrderItem from "../Entities/orderItem";
+import Product from "../Entities/product";
 import User from "../Entities/user";
 import OrderUseCase from "../UseCases/orderUseCase";
 import { IRequest, IResponse } from "./controller.types";
@@ -47,9 +50,12 @@ class OrderController {
 
     public async postMakeOrder(req: IRequest): Promise<IResponse> {
         try {
-            const {order, items} = req.body;
+            let {order, items} = req.body;
+            order.user = new User({id: order.user});
 
-            const id = await this.orderUsecase.create(order, items);
+            const id = await this.orderUsecase.create(
+                new Order(order), items.map((item: any) => new OrderItem({order: new Order({id: order.user}), product: new Product({id: item.product.id}), amount: item.amount}))
+                );
 
             return {
                 headers: this.headers,

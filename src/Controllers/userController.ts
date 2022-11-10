@@ -54,7 +54,7 @@ class UserController {
         try {
             const {user} = req.body;
 
-            const token = await this.userUsecase.signUp(new User(user));
+            const token = await this.userUsecase.signUp(new User({id: 0, ...user}));
 
             return {
                 headers: this.headers, 
@@ -78,11 +78,7 @@ class UserController {
 
     public async getUser(req: IRequest): Promise<IResponse> {
         try {
-            const {id} = req.params;
-
-            if (id != req.data.user.id) {
-                throw new Error("you can only retrieve data about yourself");
-            }
+            const {id} = req.data.user;
 
             const user = await this.userUsecase.findById(id);
 
@@ -107,11 +103,7 @@ class UserController {
 
     public async deleteUser(req: IRequest): Promise<IResponse> {
         try {
-            const {id} = req.params;
-
-            if (id != req.data.user.id) {
-                throw new Error("you can only retrieve data about yourself");
-            }
+            const id = req.data.user.id;
 
             const deleted = await this.userUsecase.deleteUser(id);
 

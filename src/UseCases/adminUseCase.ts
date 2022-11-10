@@ -50,7 +50,7 @@ class AdminUseCase {
             const id = await this.adminRepo.addOne(newAdmin);
 
             const token = genToken({
-                id: newAdmin.getId(),
+                id,
                 username: newAdmin.getUsername(),
                 access: "admin"
             });

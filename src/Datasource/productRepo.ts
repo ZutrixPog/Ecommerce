@@ -1,5 +1,6 @@
 import Admin from "../Entities/admin";
 import Product from "../Entities/product";
+import categories from "./categories";
 import Repo from "./datasource.types";
 import Database from "./db";
 
@@ -31,11 +32,11 @@ class ProductRepo implements Repo<Product> {
             const values = [crit.getId() || crit.getName() || crit.getCategory()];
     
             const product = await this.db.query(query, values);
-            console.log(product)
+    
             return this.queryResultToProduct(product.rows[0]);
         } catch (err) {
             console.error(err);
-            throw new Error("could find your Product");
+            throw new Error("couldn't find your Product");
         }
     }
 

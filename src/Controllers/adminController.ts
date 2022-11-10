@@ -55,7 +55,7 @@ class AdminController {
         try {
             const {admin} = req.body;
 
-            const token = await this.adminUsecase.signUp(new Admin(admin));
+            const token = await this.adminUsecase.signUp(new Admin({id: 0, ...admin}));
 
             return {
                 headers: this.headers, 
@@ -80,8 +80,8 @@ class AdminController {
     public async postAddProduct(req: IRequest): Promise<IResponse> {
         try {
             const {product} = req.body;
-
-            const id = await this.adminUsecase.newProduct(new Product(product));
+            
+            const id = await this.adminUsecase.newProduct(new Product({id: 0, ...product}).setAddedBy(new Admin({id: req.data.user.id})));
 
             return {
                 headers: this.headers, 
@@ -181,7 +181,7 @@ class AdminController {
     public async deleteProduct(req: IRequest): Promise<IResponse> {
         try {
             const {product} = req.body;
-            const adminId = req.body.user.id;
+            const adminId = req.data.user.id;
 
             const deleted = await this.adminUsecase.deleteProduct(new Product(product), adminId);
 

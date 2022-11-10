@@ -15,9 +15,10 @@ class OrderRepo implements Repo<Order> {
 
     async findAll(userId?: any): Promise<Order[]> {
         try {
-            const query = "SELECT * FROM orders JOIN users ON users.id = orders.user_id "  + (userId ? `WHERE orders.user_id = ${userId};`: ";");
+            const query = "SELECT orders.id as order_id, * FROM orders JOIN users ON users.id = orders.user_id "  + (userId ? `WHERE orders.user_id = ${userId};`: ";");
 
             const orders = (await this.db.query(query)).rows;
+        
             const res = orders.map(row => this.queryToOrder(row));
 
             return res;
@@ -90,8 +91,8 @@ class OrderRepo implements Repo<Order> {
 
     async deleteOne(id: any): Promise<any> {
         try {
-            const query = `DELETE FROM orders WHERE id = ${id};` +
-                          `DELETE FROM order_item WHERE order_id = ${id};`;
+            const query = `DELETE FROM order_item WHERE order_id = ${id};` + 
+                          `DELETE FROM orders WHERE id = ${id};`;
 
             await this.db.query(query);
             return id;
@@ -107,7 +108,7 @@ class OrderRepo implements Repo<Order> {
 
     queryToOrder(row: any): Order {
         return new Order({
-            id: row.id,
+            id: row.order_id,
             user: new User({id: row.user_id, username: row.username, address: row.address}),
             total: row.total,
             paymentId: row.payment_id

@@ -66,6 +66,7 @@ class UserRepo implements Repo<User> {
             throw err;
         }
     }
+    
     async deleteOne(id: any): Promise<any> {
         try {
             const query = "DELETE FROM users WHERE id = $1 RETURNING id;";

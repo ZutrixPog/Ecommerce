@@ -18,9 +18,9 @@ class UserUseCase {
         try {
             user.setPassword(await this.crypto.hash(user.getPassword()));
             const id = await this.userRepo.addOne(user);
-
+            
             const token = genToken({
-                id: user.getId(),
+                id,
                 username: user.getUsername(),
                 access: "user"
             });

@@ -1,0 +1,29 @@
+version: '3'
+services:
+  app:
+    image: ecommerce
+    ports:
+      - 8085:8085
+    volumes:
+      - db-data:/var/lib/postgresql/12/main
+  postgres:
+    image: postgres:latest
+    ports:
+      - 3030:5432
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    volumes:
+      - db-data:/var/lib/postgresql/12/main
+  pgadmin: 
+    image: dpage/pgadmin4:latest
+    ports:
+      - 82:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.local
+      - PGADMIN_DEFAULT_PASSWORD=Pg@ming@#
+    volumes:
+      - db-data:/var/lib/postgresql/12/main
+volumes:
+  db-data:
+    driver: local
